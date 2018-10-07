@@ -1,6 +1,7 @@
 <?php
 class parsecsv{
-    function read_csv($filename){
+
+    public function read_csv($filename){
         $data = file_get_contents($filename);
         $data = explode("\r\n", $data);
         $data = array_filter($data);
@@ -13,8 +14,20 @@ class parsecsv{
         return $data;
     }
 
+    public function get_header($data){
+        $header = $data[0];
+        foreach($header as $key => $h){
+            $header[$key] = "<th>".trim($h)."</th>";
+        }
+        $header = implode("\n", $header);
+        $header = "<tr>".$header."</tr>";
+
+        return $header;
+    }
+
     public function start($filename){
-        return $this->read_csv($filename);
+        $data = $this->read_csv($filename);
+        return $header = $this->get_header($data);
     }
 
 }
@@ -22,6 +35,6 @@ class parsecsv{
 
 $parsecsv = new parsecsv();
 echo "<pre>";
-$html = $parsecsv->start("us-50.csv");
+$html = $parsecsv->start("csvTable.csv");
 print_r($html);
 ?>
