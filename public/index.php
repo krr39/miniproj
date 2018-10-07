@@ -14,20 +14,30 @@ class parsecsv{
         return $data;
     }
 
-    public function get_header($data){
-        $header = $data[0];
-        foreach($header as $key => $h){
-            $header[$key] = "<th>".trim($h)."</th>";
-        }
-        $header = implode("\n", $header);
-        $header = "<tr>".$header."</tr>";
+    public function make_table($data){
 
-        return $header;
+        foreach($data as $key => $row){
+            foreach($row as $rowkey => $value){
+                if($key == 0){
+                    $row[$rowkey] = "<th>".trim($value)."</th>";
+                }else{
+                    $row[$rowkey] = "<td>".trim($value)."</th>";
+                }
+            }
+            $row = implode("\n", $row);
+            $row = "<tr>".$row."</tr>";
+            $data[$key] = $row;
+        }
+
+        $table = implode("\n", $data);
+        $table = "<table class=\"table table-striped\">".$table."</table>";
+        return $table;
     }
 
     public function start($filename){
         $data = $this->read_csv($filename);
-        return $header = $this->get_header($data);
+        return $header = $this->make_table($data);
+
     }
 
 }
@@ -35,6 +45,6 @@ class parsecsv{
 
 $parsecsv = new parsecsv();
 echo "<pre>";
-$html = $parsecsv->start("csvTable.csv");
+$html = $parsecsv->start("us-50.csv");
 print_r($html);
 ?>
